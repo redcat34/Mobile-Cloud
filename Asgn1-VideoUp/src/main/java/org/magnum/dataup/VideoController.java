@@ -56,6 +56,7 @@ public class VideoController {
 	 * 
 	 */
 	
+	
 	@Autowired
 	private VideoFileManager fileManager;
 	
@@ -134,6 +135,5 @@ public class VideoController {
 
         return urlLocalServer + "/video/" + videoId + "/data";
     }
-    
     
 }

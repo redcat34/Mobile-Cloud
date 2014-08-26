@@ -25,6 +25,7 @@ import org.springframework.boot.context.embedded.MultiPartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import java.io.IOException;
 
 // This annotation tells Spring to auto-wire your application
 @EnableAutoConfiguration
@@ -61,5 +62,19 @@ public class Application {
 		// Return the configuration to setup multipart in the container
 		return factory.createMultipartConfig();
 	}
+	
+
+    @Bean
+    public VideoFileManager videoFileManager() {
+        VideoFileManager fileManager = null;
+
+        try {
+            fileManager = VideoFileManager.get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return fileManager;
+    }
 
 }
