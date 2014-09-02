@@ -18,12 +18,16 @@
 
 package org.magnum.mobilecloud.video;
 
+import java.security.Principal;
 import java.util.Collection;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.magnum.mobilecloud.video.repository.Video;
 import org.magnum.mobilecloud.video.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,14 +53,51 @@ public class VideoServiceController {
 	}
 
 	/**
+	 * Return the video with the given id or 404 if the video is not found
+	 * */
+	@RequestMapping(value = VIDEO_PATH + "/{id}", method = RequestMethod.GET)
+	public @ResponseBody
+	Video getVideo(@PathVariable("id") long id, HttpServletResponse response) {
+		Video v = videoRepository.findById(id);
+		if (v == null) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		}
+
+		return v;
+	}
+
+	/**
 	 * Save the video metadata provided by the client and returns the saved
 	 * video represented as JSON
 	 * */
 	@RequestMapping(value = VIDEO_PATH, method = RequestMethod.POST)
-	public @ResponseBody Video addVideoMetadata(@RequestBody Video video) {
+	public @ResponseBody
+	Video addVideoMetadata(@RequestBody Video video) {
 		return videoRepository.save(video);
 	}
 
+	/**
+	 * Allows a user to like a video. Return 200 Ok on success, 404 if the video
+	 * is not found, or 400 if the user has already liked the video.
+	 * */
+	@RequestMapping(value = VIDEO_PATH + "/{id}/like", method = RequestMethod.POST)
+	public void likeVideo(@PathVariable("id") long id, Principal p,
+			HttpServletResponse response) {
+		
+	}
+
+	
+	/**
+	 * Allows a user to unlike a video. Return 200 Ok on success, 404 if the video
+	 * is not found, or 400 if the user has not previously liked the video.
+	 * */
+	@RequestMapping(value = VIDEO_PATH + "/{id}/unlike", method = RequestMethod.POST)
+	public void unLikeVideo(@PathVariable("id") long id, Principal p,
+			HttpServletResponse response) {
+		
+	}
+	
+	
 	@RequestMapping(value = "/go", method = RequestMethod.GET)
 	public @ResponseBody
 	String goodLuck() {
