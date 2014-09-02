@@ -18,20 +18,49 @@
 
 package org.magnum.mobilecloud.video;
 
+import java.util.Collection;
+
+import org.magnum.mobilecloud.video.repository.Video;
+import org.magnum.mobilecloud.video.repository.VideoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.common.collect.Lists;
+
 @Controller
-public class VideoServiceController {	
+public class VideoServiceController {
 	public static final String VIDEO_PATH = "/video";
 	public static final String SEARCH_PATH = "/search";
-	
-	
-	@RequestMapping(value="/go",method=RequestMethod.GET)
-	public @ResponseBody String goodLuck(){
+
+	@Autowired
+	private VideoRepository videoRepository;
+
+	/**
+	 * Returns the list of videos that have been added to the server as JSON
+	 * */
+	@RequestMapping(value = VIDEO_PATH, method = RequestMethod.GET)
+	public @ResponseBody
+	Collection<Video> getVideos() {
+		return Lists.newArrayList(videoRepository.findAll());
+	}
+
+	/**
+	 * Save the video metadata provided by the client and returns the saved
+	 * video represented as JSON
+	 * */
+	@RequestMapping(value = VIDEO_PATH, method = RequestMethod.POST)
+	public @ResponseBody Video addVideoMetadata(@RequestBody Video video) {
+		return videoRepository.save(video);
+	}
+
+	@RequestMapping(value = "/go", method = RequestMethod.GET)
+	public @ResponseBody
+	String goodLuck() {
 		return "Good Luck!";
 	}
-	
+
 }
