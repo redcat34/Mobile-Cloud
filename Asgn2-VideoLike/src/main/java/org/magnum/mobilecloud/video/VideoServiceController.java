@@ -20,6 +20,8 @@ package org.magnum.mobilecloud.video;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Lists;
@@ -116,7 +119,42 @@ public class VideoServiceController {
 			}
 		}
 	}
-
+	
+	/**
+	 * Return a list of users that like the Video, given the id of that video
+	 * */
+	@RequestMapping(value = VIDEO_PATH + "/{id}/likedby", method = RequestMethod.GET)
+	public @ResponseBody Set<String> getUserLikes(@PathVariable("id") long id,
+														HttpServletResponse response) {
+		Video v = getVideo(id, response);
+		Set<String> userLikes = null;
+		
+		if (v != null) {
+			userLikes = v.getUserLikes();
+		}
+		
+		return userLikes;
+	}
+	
+	/**
+	 * Return a list of videos, from the given title
+	 * */
+	@RequestMapping(value = VIDEO_PATH + SEARCH_PATH + "/findByName", method = RequestMethod.GET)
+	public @ResponseBody List<Video> findVideoByName(@RequestParam("title") String title) {
+		List<Video> videos = videoRepository.findByName(title);
+		
+		if (videos == null) {
+			videos = Lists.newArrayList(); 
+		}
+		return videos;
+	}
+	
+	/**
+	 * Return a list of videos, with the duration less than that provided in the request parameter
+	 * */
+	
+	
+	
 	@RequestMapping(value = "/go", method = RequestMethod.GET)
 	public @ResponseBody
 	String goodLuck() {
