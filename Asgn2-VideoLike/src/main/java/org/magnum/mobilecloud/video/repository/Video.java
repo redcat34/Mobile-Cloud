@@ -1,30 +1,41 @@
 package org.magnum.mobilecloud.video.repository;
 
+import java.util.Set;
+
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import com.google.common.base.Objects;
 
 /**
  * A simple object to represent a video and its URL for viewing.
  * 
- * You probably need to, at a minimum, add some annotations to this
- * class.
+ * You probably need to, at a minimum, add some annotations to this class.
  * 
- * You are free to add annotations, members, and methods to this
- * class. However, you probably should not change the existing
- * methods or member variables. If you do change them, you need
- * to make sure that they are serialized into JSON in a way that
- * matches what is expected by the auto-grader.
+ * You are free to add annotations, members, and methods to this class. However,
+ * you probably should not change the existing methods or member variables. If
+ * you do change them, you need to make sure that they are serialized into JSON
+ * in a way that matches what is expected by the auto-grader.
  * 
  * @author mitchell
  */
+@Entity
 public class Video {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+		private long id;
 
-	private long id;
+		private String name;
+		private String url;
+		private long duration;
+		private long likes;
 
-	private String name;
-	private String url;
-	private long duration;
-	private long likes;
-	
+	@ElementCollection
+	private Set<String> userLikes;
+		
 	public Video() {
 	}
 
@@ -71,11 +82,43 @@ public class Video {
 	public long getLikes() {
 		return likes;
 	}
-	
+
 	public void setLikes(long likes) {
 		this.likes = likes;
 	}
 	
+	public Set<String> getUserLikes() {
+		return userLikes;
+	}
+
+	/**
+	 * Like the video
+	 * */
+	public boolean likeVideo(String user) {
+		if (user != null) {
+			if (userLikes.add(user)) {
+				likes++;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	/**
+	 * Unlike the video
+	 * */
+	public boolean unlikeVideo(String user) {
+		if (user != null) {
+			if (userLikes.remove(user)) {
+				likes--;
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Two Videos will generate the same hashcode if they have exactly the same
 	 * values for their name, url, and duration.

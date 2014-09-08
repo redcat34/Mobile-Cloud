@@ -83,21 +83,40 @@ public class VideoServiceController {
 	@RequestMapping(value = VIDEO_PATH + "/{id}/like", method = RequestMethod.POST)
 	public void likeVideo(@PathVariable("id") long id, Principal p,
 			HttpServletResponse response) {
+		Video v = getVideo(id, response);
 		
+		if (v != null) {
+			boolean success = v.likeVideo(p.getName());
+			if (success) {
+				videoRepository.save(v);
+				response.setStatus(HttpServletResponse.SC_OK);
+			} else {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			}
+		}
+
 	}
 
-	
 	/**
-	 * Allows a user to unlike a video. Return 200 Ok on success, 404 if the video
-	 * is not found, or 400 if the user has not previously liked the video.
+	 * Allows a user to unlike a video. Return 200 Ok on success, 404 if the
+	 * video is not found, or 400 if the user has not previously liked the
+	 * video.
 	 * */
 	@RequestMapping(value = VIDEO_PATH + "/{id}/unlike", method = RequestMethod.POST)
 	public void unLikeVideo(@PathVariable("id") long id, Principal p,
 			HttpServletResponse response) {
-		
+		Video v = getVideo(id, response);
+
+		if (v != null) {
+			boolean success = v.unlikeVideo(p.getName());
+			if (success) {
+				response.setStatus(HttpServletResponse.SC_OK);
+			} else {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			}
+		}
 	}
-	
-	
+
 	@RequestMapping(value = "/go", method = RequestMethod.GET)
 	public @ResponseBody
 	String goodLuck() {
