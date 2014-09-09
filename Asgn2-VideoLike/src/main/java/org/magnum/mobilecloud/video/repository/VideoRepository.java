@@ -21,6 +21,6 @@ public interface VideoRepository extends CrudRepository<Video, Long> {
 	 * value
 	 * */
 	
-	List<Video> findDurationLessThan(long duration);
+	List<Video> findByDurationLessThan(long duration);
 
 }

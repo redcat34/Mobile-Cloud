@@ -87,7 +87,7 @@ public class VideoServiceController {
 	public void likeVideo(@PathVariable("id") long id, Principal p,
 			HttpServletResponse response) {
 		Video v = getVideo(id, response);
-		
+
 		if (v != null) {
 			boolean success = v.likeVideo(p.getName());
 			if (success) {
@@ -119,46 +119,54 @@ public class VideoServiceController {
 			}
 		}
 	}
-	
+
 	/**
 	 * Return a list of users that like the Video, given the id of that video
 	 * */
 	@RequestMapping(value = VIDEO_PATH + "/{id}/likedby", method = RequestMethod.GET)
-	public @ResponseBody Set<String> getUserLikes(@PathVariable("id") long id,
-														HttpServletResponse response) {
+	public @ResponseBody
+	Set<String> getUserLikes(@PathVariable("id") long id,
+			HttpServletResponse response) {
 		Video v = getVideo(id, response);
 		Set<String> userLikes = null;
-		
+
 		if (v != null) {
 			userLikes = v.getUserLikes();
 		}
-		
+
 		return userLikes;
 	}
-	
+
 	/**
 	 * Return a list of videos, from the given title
 	 * */
 	@RequestMapping(value = VIDEO_PATH + SEARCH_PATH + "/findByName", method = RequestMethod.GET)
-	public @ResponseBody List<Video> findVideoByName(@RequestParam("title") String title) {
+	public @ResponseBody
+	List<Video> findVideoByName(@RequestParam("title") String title) {
 		List<Video> videos = videoRepository.findByName(title);
-		
+
 		if (videos == null) {
-			videos = Lists.newArrayList(); 
+			videos = Lists.newArrayList();
 		}
 		return videos;
 	}
-	
+
 	/**
-	 * Return a list of videos, with the duration less than that provided in the request parameter
+	 * Return a list of videos, with the duration less than that provided in the
+	 * request parameter
 	 * */
-	
-	
-	
-	@RequestMapping(value = "/go", method = RequestMethod.GET)
+	@RequestMapping(value = VIDEO_PATH + SEARCH_PATH
+			+ "/findByDurationLessThan", method = RequestMethod.GET)
 	public @ResponseBody
-	String goodLuck() {
-		return "Good Luck!";
+	List<Video> findVideoByDurationLessThan(
+			@RequestParam("duration") long duration) {
+		List<Video> videos = videoRepository.findByDurationLessThan(duration);
+
+		if (videos == null) {
+			videos = Lists.newArrayList();
+		}
+
+		return videos;
 	}
 
 }
